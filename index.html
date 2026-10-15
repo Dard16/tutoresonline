@@ -119,17 +119,7 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:10px;paddi
 
 <section data-t="Base de datos">
 <h2>Diseño de la base de datos (PostgreSQL)</h2>
-<div class="wrap"><pre class="mermaid">erDiagram
- USUARIOS ||--o| PERFILES_TUTOR : tiene
- PERFILES_TUTOR ||--o{ TUTOR_MATERIAS : ensena
- MATERIAS ||--o{ TUTOR_MATERIAS : incluye
- PERFILES_TUTOR ||--o{ DISPONIBILIDAD : define
- USUARIOS ||--o{ RESERVAS : solicita
- PERFILES_TUTOR ||--o{ RESERVAS : recibe
- MATERIAS ||--o{ RESERVAS : sobre
- RESERVAS ||--o| PAGOS : genera
- RESERVAS ||--o{ RESENAS : tiene
- USUARIOS ||--o{ NOTIFICACIONES : recibe</pre></div>
+<div class="wrap" id="erd"></div>
 <pre>CREATE TABLE usuarios (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
@@ -213,7 +203,7 @@ CREATE TABLE notificaciones (
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const secs=$$('section'),nav=$('#nav');
-function go(i){secs.forEach((s,j)=>s.classList.toggle('on',j===i));$$('#nav button').forEach((b,j)=>b.setAttribute('aria-current',j===i));scrollTo(0,0)}
+function go(i){secs.forEach((s,j)=>s.classList.toggle('on',j===i));$$('#nav button').forEach((b,j)=>b.setAttribute('aria-current',j===i));scrollTo(0,0);if(secs[i].dataset.t==='Base de datos')drawERD()}
 secs.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.dataset.t;b.onclick=()=>go(i);nav.append(b)});
 $('#vw').onclick=()=>{$('#stage').classList.remove('mobile');$('#vw').setAttribute('aria-current',true);$('#vm').setAttribute('aria-current',false)};
 $('#vm').onclick=()=>{$('#stage').classList.add('mobile');$('#vm').setAttribute('aria-current',true);$('#vw').setAttribute('aria-current',false)};
@@ -238,6 +228,8 @@ let r=0;$('#stars').innerHTML=[1,2,3,4,5].map(n=>`<button aria-label="${n} estre
 $$('#stars button').forEach((b,i)=>b.onclick=()=>{r=i+1;$$('#stars button').forEach((x,j)=>x.classList.toggle('on',j<r))});
 $('#rate').onclick=()=>{$('#rmsg').textContent=r?'Gracias. El promedio del tutor se actualizó.':'Elige al menos una estrella.'};
 $('#now').onclick=()=>{$('#nmsg').innerHTML='<span class="pulse">Buscando tutor de Física… ~45 seg</span>';setTimeout(()=>$('#nmsg').innerHTML='<b>Laura aceptó tu tutoría.</b> <button class="btn" onclick="go(4)">Entrar a la sala</button>',2200)};
-mermaid.initialize({startOnLoad:true,theme:matchMedia('(prefers-color-scheme:dark)').matches?'dark':'default'});
+const ERD=['erDiagram','USUARIOS ||--o| PERFILES_TUTOR : tiene','PERFILES_TUTOR ||--o{ TUTOR_MATERIAS : ensena','MATERIAS ||--o{ TUTOR_MATERIAS : incluye','PERFILES_TUTOR ||--o{ DISPONIBILIDAD : define','USUARIOS ||--o{ RESERVAS : solicita','PERFILES_TUTOR ||--o{ RESERVAS : recibe','MATERIAS ||--o{ RESERVAS : sobre','RESERVAS ||--o| PAGOS : genera','RESERVAS ||--o{ RESENAS : tiene','USUARIOS ||--o{ NOTIFICACIONES : recibe'].join('\n');
+let erdOk=false;
+async function drawERD(){if(erdOk)return;try{mermaid.initialize({startOnLoad:false,theme:matchMedia('(prefers-color-scheme:dark)').matches?'dark':'default'});const r=await mermaid.render('erdsvg',ERD);$('#erd').innerHTML=r.svg;erdOk=true}catch(e){$('#erd').innerHTML='<pre>'+ERD+'</pre>'}}
 go(0);
 </script></body></html>
