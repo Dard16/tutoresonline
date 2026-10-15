@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TutoresOn-Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--fg:#1b2238;--mut:#5d6684;--line:#dfe3ee;--pri:#23358a;--onpri:#fff;--acc:#f2b705;--ok:#1d8a5a;--bad:#c23b3b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10142a;--card:#1a2040;--fg:#eef0fa;--mut:#a3abc9;--line:#2c3460;--pri:#8fa2ff;--onpri:#10142a}}
+:root[data-theme="dark"]{--bg:#10142a;--card:#1a2040;--fg:#eef0fa;--mut:#a3abc9;--line:#2c3460;--pri:#8fa2ff;--onpri:#10142a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0 0 .4em;line-height:1.15}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--line);z-index:5;padding:10px 16px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.logo{font:800 20px "Bricolage Grotesque",system-ui;color:var(--pri)}
+nav{display:flex;gap:6px;overflow-x:auto;padding-top:8px}
+nav button,.seg button{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:6px 10px;cursor:pointer;white-space:nowrap;font:inherit}
+nav button[aria-current=true],.seg button[aria-current=true]{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.seg{display:flex;gap:4px}
+main{padding:20px 16px 60px;display:flex;justify-content:center}
+#stage{width:100%;max-width:980px;transition:max-width .2s}
+#stage.mobile{max-width:390px;border:8px solid var(--fg);border-radius:32px;padding:14px;background:var(--bg)}
+section{display:none}section.on{display:block}
+.lead{color:var(--mut);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:220px 1fr;gap:14px}
+.mobile .grid{grid-template-columns:1fr}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.mobile .list{grid-template-columns:1fr}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit}
+.btn{background:var(--pri);color:var(--onpri);border:0;border-radius:8px;padding:10px 16px;font:600 15px inherit;cursor:pointer}
+.btn.alt{background:transparent;color:var(--pri);border:1px solid var(--pri)}
+.btn.ok{background:var(--ok);color:#fff}.btn.no{background:var(--bad);color:#fff}
+.btn:focus-visible,nav button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.badge{background:var(--acc);color:#222;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:700}
+.star{color:#e0a100}.mut{color:var(--mut)}
+.chips span{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:3px 10px;margin:3px 3px 0 0;cursor:pointer}
+.chips span.sel{background:var(--pri);color:var(--onpri)}
+.slots button{margin:3px 3px 0 0}
+.slots button.sel{background:var(--pri);color:var(--onpri)}
+.video{background:#0d1022;color:#fff;border-radius:12px;height:230px;display:grid;place-items:center;position:relative}
+.video small{position:absolute;right:10px;bottom:10px;background:#333;padding:20px 28px;border-radius:8px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.stars button{background:none;border:0;font-size:30px;color:var(--line);cursor:pointer}.stars button.on{color:#e0a100}
+.pulse{animation:p 1.2s infinite}@keyframes p{50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+.wrap{overflow-x:auto}
+pre{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;font-size:12.5px;line-height:1.45}
+.flow{font-size:13px}
+</style></head><body>
+<header><div class="top"><span class="logo">TutoresOn-Line</span>
+<div class="seg" role="group" aria-label="Vista"><button id="vw" aria-current="true">Web</button><button id="vm">Móvil</button></div></div>
+<nav id="nav"></nav></header>
+<main><div id="stage">
+
+<section data-t="1 Registro">
+<h2>Registro e inicio de sesión</h2><p class="lead">Un mismo formulario cambia sus campos según el rol.</p>
+<div class="card"><div class="chips" id="rol"><span class="sel">Soy estudiante</span><span>Soy tutor</span></div>
+<label>Nombre completo</label><input placeholder="Camilo Herrera">
+<label>Correo electrónico</label><input type="email" placeholder="correo@ejemplo.com">
+<label>Contraseña</label><input type="password">
+<div id="f-est"><label>Nivel educativo</label><select><option>Secundaria</option><option>Universitario</option></select></div>
+<div id="f-tut" hidden><label>Materias que enseñas</label><input placeholder="Cálculo, Álgebra"><label>Tarifa por hora (COP)</label><input type="number" value="35000"></div>
+<p><button class="btn" id="reg">Crear cuenta</button> <button class="btn alt">Google</button> <button class="btn alt">Apple</button></p>
+<p class="mut flow" id="regmsg">Estudiante: pasa a Búsqueda. Tutor: completa perfil y disponibilidad.</p></div>
+</section>
+
+<section data-t="2 Búsqueda">
+<h2>Búsqueda de tutores</h2>
+<div class="grid"><aside class="card"><b>Filtros</b>
+<label>Materia</label><select id="fm"><option value="">Todas</option><option>Cálculo</option><option>Física</option><option>Inglés</option><option>Programación</option></select>
+<label>Modalidad</label><select id="fmod"><option value="">Todas</option><option>Virtual</option><option>Presencial</option></select>
+<label>Calificación mínima</label><select id="fc"><option value="0">Cualquiera</option><option value="4.5">4.5 o más</option></select></aside>
+<div><input id="q" placeholder="Buscar por materia, tema o tutor…"><div class="list" id="res"></div></div></div>
+</section>
+
+<section data-t="3 Perfil y reserva">
+<h2>Perfil de tutor y reserva</h2>
+<div class="card"><b>Laura Restrepo</b> <span class="badge">Verificada</span><br><span class="star">★★★★★</span> 4.9 · 128 reseñas<br>
+<span class="mut">Ingeniera con 5 años de experiencia enseñando matemáticas universitarias.</span>
+<p class="mut">“Explica muy claro y es puntual.” · “Me ayudó a pasar mi examen final.”</p></div>
+<div class="card"><label>Día</label><div class="slots" id="dias"></div>
+<label>Hora</label><div class="slots" id="horas"></div>
+<label>Modalidad</label><select><option>Virtual</option><option>Presencial</option></select>
+<label>Método de pago</label><select><option>Tarjeta</option><option>PSE</option><option>Nequi</option></select>
+<p><b>1 hora — $35.000</b></p><button class="btn" id="book">Reservar sesión</button> <span id="bmsg" class="mut"></span></div>
+</section>
+
+<section data-t="4 Panel tutor">
+<h2>Panel del tutor</h2>
+<div class="card"><b>Solicitudes pendientes</b><div id="sol"></div></div>
+<div class="card"><b>Mi disponibilidad semanal</b><div class="chips" id="disp"><span class="sel">Lun AM</span><span class="sel">Mar AM</span><span>Mié AM</span><span class="sel">Jue AM</span><span>Vie AM</span><span>Sáb</span><span>Dom</span></div></div>
+</section>
+
+<section data-t="5 Videollamada">
+<h2>Sesión de tutoría</h2>
+<div class="video">Video del tutor<small>Tú</small></div>
+<div class="bar"><button class="btn alt">Mic</button><button class="btn alt">Cámara</button><button class="btn alt">Pantalla</button><button class="btn alt">Pizarra</button><button class="btn alt">Chat</button><button class="btn no" id="exit">Finalizar sesión</button></div>
+</section>
+
+<section data-t="6 Reseñas">
+<h2>¿Cómo estuvo tu sesión con Laura?</h2><p class="mut">Cálculo · 1 hora · $35.000</p>
+<div class="card"><div class="stars" id="stars"></div>
+<div class="chips" id="tags"><span>Explica bien</span><span>Puntual</span><span>Paciente</span><span>Buen material</span></div>
+<label>Comentario (opcional)</label><textarea rows="3"></textarea>
+<p><button class="btn" id="rate">Enviar calificación</button> <span id="rmsg" class="mut"></span></p></div>
+</section>
+
+<section data-t="7 Modo ahora">
+<h2>Tutoría ahora</h2><p class="lead">El primer tutor disponible que acepte queda asignado.</p>
+<div class="card"><label>Materia</label><select><option>Física</option><option>Cálculo</option></select>
+<label>Modalidad</label><select><option>Virtual</option><option>Presencial</option></select>
+<p><button class="btn" id="now">Buscar tutor ahora</button></p><p id="nmsg"></p></div>
+<div class="list"><div class="card">Correo: tu sesión con Laura Restrepo fue confirmada para hoy a las 3:00 pm.</div><div class="card">WhatsApp: ¡Listo! Laura aceptó tu tutoría de Física.</div><div class="card">SMS: tu tutoría empieza en 10 minutos.</div></div>
+</section>
+
+<section data-t="Base de datos">
+<h2>Diseño de la base de datos (PostgreSQL)</h2>
+<div class="wrap"><pre class="mermaid">erDiagram
+ USUARIOS ||--o| PERFILES_TUTOR : tiene
+ PERFILES_TUTOR ||--o{ TUTOR_MATERIAS : ensena
+ MATERIAS ||--o{ TUTOR_MATERIAS : incluye
+ PERFILES_TUTOR ||--o{ DISPONIBILIDAD : define
+ USUARIOS ||--o{ RESERVAS : solicita
+ PERFILES_TUTOR ||--o{ RESERVAS : recibe
+ MATERIAS ||--o{ RESERVAS : sobre
+ RESERVAS ||--o| PAGOS : genera
+ RESERVAS ||--o{ RESENAS : tiene
+ USUARIOS ||--o{ NOTIFICACIONES : recibe</pre></div>
+<pre>CREATE TABLE usuarios (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL,
+  correo VARCHAR(160) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  rol VARCHAR(10) NOT NULL CHECK (rol IN ('estudiante','tutor')),
+  nivel_educativo VARCHAR(40),
+  telefono VARCHAR(20),
+  correo_verificado BOOLEAN DEFAULT FALSE,
+  creado_en TIMESTAMP DEFAULT NOW()
+);
+CREATE TABLE perfiles_tutor (
+  id SERIAL PRIMARY KEY,
+  usuario_id INT UNIQUE NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  biografia TEXT,
+  tarifa_hora NUMERIC(10,2) NOT NULL,
+  zona VARCHAR(80),
+  verificado BOOLEAN DEFAULT FALSE,
+  disponible_ahora BOOLEAN DEFAULT FALSE,
+  promedio NUMERIC(2,1) DEFAULT 0,
+  total_resenas INT DEFAULT 0
+);
+CREATE TABLE materias (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(80) UNIQUE NOT NULL
+);
+CREATE TABLE tutor_materias (
+  tutor_id INT REFERENCES perfiles_tutor(id) ON DELETE CASCADE,
+  materia_id INT REFERENCES materias(id),
+  PRIMARY KEY (tutor_id, materia_id)
+);
+CREATE TABLE disponibilidad (
+  id SERIAL PRIMARY KEY,
+  tutor_id INT NOT NULL REFERENCES perfiles_tutor(id) ON DELETE CASCADE,
+  dia_semana SMALLINT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL
+);
+CREATE TABLE reservas (
+  id SERIAL PRIMARY KEY,
+  estudiante_id INT NOT NULL REFERENCES usuarios(id),
+  tutor_id INT NOT NULL REFERENCES perfiles_tutor(id),
+  materia_id INT NOT NULL REFERENCES materias(id),
+  inicio TIMESTAMP NOT NULL,
+  duracion_min INT DEFAULT 60,
+  modalidad VARCHAR(10) CHECK (modalidad IN ('virtual','presencial')),
+  estado VARCHAR(12) DEFAULT 'pendiente'
+    CHECK (estado IN ('pendiente','aceptada','rechazada','finalizada','cancelada')),
+  es_modo_ahora BOOLEAN DEFAULT FALSE,
+  enlace_video TEXT
+);
+CREATE TABLE pagos (
+  id SERIAL PRIMARY KEY,
+  reserva_id INT UNIQUE NOT NULL REFERENCES reservas(id),
+  monto NUMERIC(10,2) NOT NULL,
+  metodo VARCHAR(20),
+  estado VARCHAR(12) DEFAULT 'pendiente',
+  pagado_en TIMESTAMP
+);
+CREATE TABLE resenas (
+  id SERIAL PRIMARY KEY,
+  reserva_id INT NOT NULL REFERENCES reservas(id),
+  autor_id INT NOT NULL REFERENCES usuarios(id),
+  destinatario_id INT NOT NULL REFERENCES usuarios(id),
+  calificacion SMALLINT NOT NULL CHECK (calificacion BETWEEN 1 AND 5),
+  etiquetas TEXT[],
+  comentario TEXT,
+  UNIQUE (reserva_id, autor_id)
+);
+CREATE TABLE notificaciones (
+  id SERIAL PRIMARY KEY,
+  usuario_id INT NOT NULL REFERENCES usuarios(id),
+  canal VARCHAR(10) CHECK (canal IN ('correo','sms','whatsapp','push')),
+  mensaje TEXT NOT NULL,
+  enviada_en TIMESTAMP DEFAULT NOW()
+);</pre>
+</section>
+
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const secs=$$('section'),nav=$('#nav');
+function go(i){secs.forEach((s,j)=>s.classList.toggle('on',j===i));$$('#nav button').forEach((b,j)=>b.setAttribute('aria-current',j===i));scrollTo(0,0)}
+secs.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.dataset.t;b.onclick=()=>go(i);nav.append(b)});
+$('#vw').onclick=()=>{$('#stage').classList.remove('mobile');$('#vw').setAttribute('aria-current',true);$('#vm').setAttribute('aria-current',false)};
+$('#vm').onclick=()=>{$('#stage').classList.add('mobile');$('#vm').setAttribute('aria-current',true);$('#vw').setAttribute('aria-current',false)};
+function pick(box,single){$$(box+' span, '+box+' button').forEach(e=>e.onclick=()=>{if(single)$$(box+' span, '+box+' button').forEach(x=>x.classList.remove('sel'));e.classList.toggle('sel')})}
+let tutor=false;
+$$('#rol span').forEach((e,i)=>e.onclick=()=>{tutor=i===1;$$('#rol span').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');$('#f-est').hidden=tutor;$('#f-tut').hidden=!tutor});
+$('#reg').onclick=()=>go(tutor?3:1);
+const T=[['Laura Restrepo','Cálculo','Virtual',4.9,35000,1],['Andrés Pinto','Física','Virtual',4.4,30000,0],['Camila Ruiz','Inglés','Presencial',4.9,28000,0],['Julián Vega','Programación','Virtual',4.3,40000,0]];
+function render(){const q=$('#q').value.toLowerCase(),m=$('#fm').value,md=$('#fmod').value,c=+$('#fc').value;
+$('#res').innerHTML=T.filter(t=>(!m||t[1]===m)&&(!md||t[2]===md)&&t[3]>=c&&(t[0]+t[1]).toLowerCase().includes(q)).map(t=>`<div class="card"><b>${t[0]}</b> ${t[5]?'<span class="badge">Disponible ahora</span>':''}<br><span class="star">★</span> ${t[3]} · ${t[1]} · ${t[2]}<br>$${t[4].toLocaleString('es-CO')}/h<p><button class="btn" onclick="go(2)">Ver perfil</button></p></div>`).join('')||'<p class="mut">Sin resultados. Prueba quitando algún filtro.</p>'}
+['#q','#fm','#fmod','#fc'].forEach(s=>$(s).oninput=render);render();
+$('#dias').innerHTML=['Lun','Mar','Mié','Jue','Vie'].map(d=>`<button class="btn alt">${d}</button>`).join('');
+$('#horas').innerHTML=['3:00 pm','4:00 pm','5:00 pm','6:00 pm'].map(d=>`<button class="btn alt">${d}</button>`).join('');
+pick('#dias',1);pick('#horas',1);
+$('#book').onclick=()=>{$('#bmsg').textContent='Reserva enviada. Llegará al panel del tutor.';setTimeout(()=>go(3),700)};
+const S=[['Camilo H. — Cálculo','Hoy, 3:00 pm'],['Sara P. — Álgebra','Mañana, 5:00 pm']];
+$('#sol').innerHTML=S.map((s,i)=>`<div class="card" id="s${i}"><b>${s[0]}</b><br><span class="mut">${s[1]} · Virtual</span><p><button class="btn ok" onclick="resp(${i},1)">Aceptar</button> <button class="btn no" onclick="resp(${i},0)">Rechazar</button></p></div>`).join('');
+function resp(i,ok){$('#s'+i).innerHTML=ok?'<b>Aceptada.</b> Se generó el enlace. <button class="btn" onclick="go(4)">Ir a la videollamada</button>':'<b>Rechazada.</b> Se liberó el horario y se avisó al estudiante.'}
+pick('#disp');pick('#tags');
+$('#exit').onclick=()=>go(5);
+let r=0;$('#stars').innerHTML=[1,2,3,4,5].map(n=>`<button aria-label="${n} estrellas">★</button>`).join('');
+$$('#stars button').forEach((b,i)=>b.onclick=()=>{r=i+1;$$('#stars button').forEach((x,j)=>x.classList.toggle('on',j<r))});
+$('#rate').onclick=()=>{$('#rmsg').textContent=r?'Gracias. El promedio del tutor se actualizó.':'Elige al menos una estrella.'};
+$('#now').onclick=()=>{$('#nmsg').innerHTML='<span class="pulse">Buscando tutor de Física… ~45 seg</span>';setTimeout(()=>$('#nmsg').innerHTML='<b>Laura aceptó tu tutoría.</b> <button class="btn" onclick="go(4)">Entrar a la sala</button>',2200)};
+mermaid.initialize({startOnLoad:true,theme:matchMedia('(prefers-color-scheme:dark)').matches?'dark':'default'});
+go(0);
+</script></body></html>
